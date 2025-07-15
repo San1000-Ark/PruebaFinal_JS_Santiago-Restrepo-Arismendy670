@@ -19,7 +19,7 @@ buttons.forEach(button => {
 window.addEventListener('DOMContentLoaded', () => {
   loadRoute(location.hash.slice(1));
 });
-
+//options routes
 function loadRoute(route) {
   switch (route) {
     case 'add-event':
@@ -45,7 +45,7 @@ function loadRoute(route) {
       break;
   }
 }
-
+//add
 function renderAddForm() {
   app.innerHTML = `
     <h2>Add Event</h2>
@@ -234,7 +234,7 @@ function renderRegisterForm() {
     }
   });
 }
-
+//login
 function renderLoginForm() {
   app.innerHTML = `
     <h2>Login</h2>

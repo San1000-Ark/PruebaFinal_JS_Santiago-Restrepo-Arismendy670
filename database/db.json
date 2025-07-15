@@ -1,6 +1,18 @@
 {
   "users": [
     {
+      "id": "1",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "role": "user"
+    },
+    {
+      "id": "2",
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "role": "admin"
+    },
+    {
       "username": "santi",
       "email": "brahiamruizalzate@gmail.com",
       "password": "123",
@@ -13,6 +25,13 @@
       "password": "123",
       "role": "user",
       "id": "cazaXaU"
+    },
+    {
+      "username": "santi",
+      "email": "124545@gmail.com",
+      "password": "456",
+      "role": "admin",
+      "id": "QlrC77G"
     }
   ],
   "events": []
