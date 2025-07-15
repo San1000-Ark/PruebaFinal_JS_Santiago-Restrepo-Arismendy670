@@ -4,50 +4,50 @@ const API_URL = 'http://localhost:3000/events';
 
 //  detect change of the hash in the URL (#add, #edit, #remove, #show)
 window.addEventListener('hashchange', () => {
-  loadRoute(location.hash.slice(1));
+    loadRoute(location.hash.slice(1));
 });
 
 // btn menu
 buttons.forEach(button => {
-  button.addEventListener('click', () => {
-    const route = button.dataset.route;
-    location.hash = route;
-  });
+    button.addEventListener('click', () => {
+        const route = button.dataset.route;
+        location.hash = route;
+    });
 });
 
 // change initial 
 window.addEventListener('DOMContentLoaded', () => {
-  loadRoute(location.hash.slice(1));
+    loadRoute(location.hash.slice(1));
 });
 //options routes
 function loadRoute(route) {
-  switch (route) {
-    case 'add-event':
-      renderAddForm();
-      break;
-    case 'edit-event':
-      renderEditForm();
-      break;
-    case 'remove-event':
-      renderRemoveForm();
-      break;
-    case 'show-events':
-      renderEvents();
-      break;
-    case 'register':
-      renderRegisterForm();
-      break;
-    case 'login':
-      renderLoginForm();
-       break;
-    default:
-      app.innerHTML = '<h2>Welcome to the events</h2>';
-      break;
-  }
+    switch (route) {
+        case 'add-event':
+            renderAddForm();
+            break;
+        case 'edit-event':
+            renderEditForm();
+            break;
+        case 'remove-event':
+            renderRemoveForm();
+            break;
+        case 'show-events':
+            renderEvents();
+            break;
+        case 'register':
+            renderRegisterForm();
+            break;
+        case 'login':
+            renderLoginForm();
+            break;
+        default:
+            app.innerHTML = '<h2>Welcome to the events</h2>';
+            break;
+    }
 }
 //add
 function renderAddForm() {
-  app.innerHTML = `
+    app.innerHTML = `
     <h2>Add Event</h2>
     <form id="addForm">
       <input type="text" name="name" placeholder="Name Event" required><br><br>
@@ -56,24 +56,24 @@ function renderAddForm() {
     </form>
   `;
 
-  document.getElementById('addForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const event = {
-      name: e.target.name.value,
-      date: e.target.date.value
-    };
-    await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(event)
+    document.getElementById('addForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const event = {
+            name: e.target.name.value,
+            date: e.target.date.value
+        };
+        await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(event)
+        });
+        alert('Event added!');
+        e.target.reset();
     });
-    alert('Event added!');
-    e.target.reset();
-  });
 }
 //edit
 function renderEditForm() {
-  app.innerHTML = `
+    app.innerHTML = `
     <h2>Edit Event</h2>
     <form id="editForm">
       <input type="text" name="id" placeholder="Event ID" required><br><br>
@@ -83,25 +83,25 @@ function renderEditForm() {
     </form>
   `;
 
-  document.getElementById('editForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const id = e.target.id.value;
-    const updatedEvent = {};
-    if (e.target.name.value) updatedEvent.name = e.target.name.value;
-    if (e.target.date.value) updatedEvent.date = e.target.date.value;
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = e.target.id.value;
+        const updatedEvent = {};
+        if (e.target.name.value) updatedEvent.name = e.target.name.value;
+        if (e.target.date.value) updatedEvent.date = e.target.date.value;
 
-    await fetch(`${API_URL}/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedEvent)
+        await fetch(`${API_URL}/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedEvent)
+        });
+        alert('Event updated!');
+        e.target.reset();
     });
-    alert('Event updated!');
-    e.target.reset();
-  });
 }
 //remove
 function renderRemoveForm() {
-  app.innerHTML = `
+    app.innerHTML = `
     <h2>Remove Event</h2>
     <form id="removeForm">
       <input type="text" name="id" placeholder="Event ID (text or number)" required><br><br>
@@ -109,81 +109,81 @@ function renderRemoveForm() {
     </form>
   `;
 
-  const form = document.getElementById('removeForm');
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+    const form = document.getElementById('removeForm');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-    const id = e.target.id.value.trim();
+        const id = e.target.id.value.trim();
 
-    if (!id) {
-      alert('Please enter a valid Event ID');
-      return;
-    }
-
-    try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
+        if (!id) {
+            alert('Please enter a valid Event ID');
+            return;
         }
-      });
 
-      if (response.status === 200 || response.status === 204) {
-        alert('Event deleted successfully');
-        form.reset();
-      } else if (response.status === 404) {
-        alert('Event not found');
-      } else {
-        alert('Error deleting event');
-      }
-    } catch (error) {
-      console.error('Error deleting event:', error);
-      alert('An error occurred while deleting the event.');
-    }
-  });
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.status === 200 || response.status === 204) {
+                alert('Event deleted successfully');
+                form.reset();
+            } else if (response.status === 404) {
+                alert('Event not found');
+            } else {
+                alert('Error deleting event');
+            }
+        } catch (error) {
+            console.error('Error deleting event:', error);
+            alert('An error occurred while deleting the event.');
+        }
+    });
 }
 //show
 async function renderEvents() {
-  app.innerHTML = '<h2>Events List</h2>';
+    app.innerHTML = '<h2>Events List</h2>';
 
-  try {
-    const res = await fetch(API_URL);
-    if (!res.ok) throw new Error('Error fetching events');
+    try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error('Error fetching events');
 
-    const events = await res.json();
+        const events = await res.json();
 
-    if (events.length === 0) {
-      app.innerHTML += '<p>No events found.</p>';
-      return;
+        if (events.length === 0) {
+            app.innerHTML += '<p>No events found.</p>';
+            return;
+        }
+
+        const list = document.createElement('ul');
+        //create and add styles to event list
+        list.style.listStyle = 'none';
+        list.style.padding = '0';
+
+        events.forEach(event => {
+            const li = document.createElement('li');
+            li.style.padding = '10px';
+            li.style.borderBottom = '1px solid #ccc';
+            li.style.display = 'flex';
+            li.style.justifyContent = 'space-between';
+            li.style.alignItems = 'center';
+            //final result and show list 
+            li.innerHTML = `<span><strong>ID:</strong> ${event.id} | <strong>Name:</strong> ${event.name || 'N/A'} | <strong>Date:</strong> ${event.date || 'N/A'}</span>`;
+
+            list.appendChild(li);//add li into the list 
+        });
+
+        app.appendChild(list);//add list into the app 
+    } catch (error) {
+        console.error('Error loading events:', error);
+        app.innerHTML += '<p>Could not load events. Please try again later.</p>';
     }
-
-    const list = document.createElement('ul');
-    //create and add styles to event list
-    list.style.listStyle = 'none';
-    list.style.padding = '0';
-
-    events.forEach(event => {
-      const li = document.createElement('li');
-      li.style.padding = '10px';
-      li.style.borderBottom = '1px solid #ccc';
-      li.style.display = 'flex';
-      li.style.justifyContent = 'space-between';
-      li.style.alignItems = 'center';
-        //final result and show list 
-      li.innerHTML = `<span><strong>ID:</strong> ${event.id} | <strong>Name:</strong> ${event.name || 'N/A'} | <strong>Date:</strong> ${event.date || 'N/A'}</span>`;
-
-      list.appendChild(li);//add li into the list 
-    });
-
-    app.appendChild(list);//add list into the app 
-  } catch (error) {
-    console.error('Error loading events:', error);
-    app.innerHTML += '<p>Could not load events. Please try again later.</p>';
-  }
 }
 //register user (user or admin)
 function renderRegisterForm() {
-  app.innerHTML = `
+    app.innerHTML = `
     <h2>Register</h2>
     <form id="registerForm">
       <input type="text" name="username" placeholder="Username" required><br><br>
@@ -198,40 +198,40 @@ function renderRegisterForm() {
     </form>
   `;
 
-  document.getElementById('registerForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const user = {
-      username: e.target.username.value,
-      email: e.target.email.value,
-      password: e.target.password.value,
-      role: e.target.role.value
-    };
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = {
+            username: e.target.username.value,
+            email: e.target.email.value,
+            password: e.target.password.value,
+            role: e.target.role.value
+        };
 
-    const res = await fetch('http://localhost:3000/users?email=' + user.email);
-    const existing = await res.json();
+        const res = await fetch('http://localhost:3000/users?email=' + user.email);
+        const existing = await res.json();
 
-    if (existing.length > 0) {
-      alert('Email already registered');
-      return;
-    }
+        if (existing.length > 0) {
+            alert('Email already registered');
+            return;
+        }
 
-    const save = await fetch('http://localhost:3000/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(user)
+        const save = await fetch('http://localhost:3000/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(user)
+        });
+
+        if (save.ok) {
+            alert('User registered... Redirecting to login...');
+            location.hash = 'login';
+        } else {
+            alert('Error registering user.');
+        }
     });
-
-    if (save.ok) {
-      alert('User registered... Redirecting to login...');
-      location.hash = 'login';
-    } else {
-      alert('Error registering user.');
-    }
-  });
 }
 //login (user or admin)
 function renderLoginForm() {
-  app.innerHTML = `
+    app.innerHTML = `
     <h2>Login</h2>
     <form id="loginForm">
       <input type="email" name="email" placeholder="Email" required><br><br>
@@ -240,25 +240,25 @@ function renderLoginForm() {
     </form>
   `;
 
-  document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = e.target.email.value;
+        const password = e.target.password.value;
 
-    const res = await fetch(`http://localhost:3000/users?email=${email}&password=${password}`);
-    const users = await res.json();
+        const res = await fetch(`http://localhost:3000/users?email=${email}&password=${password}`);
+        const users = await res.json();
 
-    if (users.length > 0) {
-      const user = users[0];
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      alert(`Welcome ${user.username}`);
-      showUserInfo();
-      applyRoleAccess(user.role);
-      location.hash = 'show-events';
-    } else {
-      alert('Invalid credentials');
-    }
-  });
+        if (users.length > 0) {
+            const user = users[0];
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            alert(`Welcome ${user.username}`);
+            showUserInfo();
+            applyRoleAccess(user.role);
+            location.hash = 'show-events';
+        } else {
+            alert('Invalid credentials');
+        }
+    });
 }
 
 
