@@ -1,20 +1,19 @@
 {
   "users": [
     {
-      "id": 1,
-      "name": "user",
-      "email": "user@gmail.com",
+      "username": "santi",
+      "email": "brahiamruizalzate@gmail.com",
       "password": "123",
-      "rol": "user"
+      "role": "admin",
+      "id": "Y6Qp-5z"
+    },
+    {
+      "username": "vane",
+      "email": "admin@gmail.com",
+      "password": "123",
+      "role": "user",
+      "id": "cazaXaU"
     }
   ],
-  "admins": [
-    {
-      "id": 1,
-      "name": "Admin",
-      "email": "admin@ejemplo.com",
-      "password": "102030",
-      "rol": "admin"
-    }
-  ]
+  "events": []
 }
