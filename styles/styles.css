@@ -1,14 +1,14 @@
-/* Reset básico */
+/* Reset y estilo base */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #000000;
-  color: #FFFFFF;
+  background: linear-gradient(135deg, #1e1e2f, #2c2c4a);
+  color: #fff;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -17,125 +17,94 @@ body {
 
 .container {
   display: flex;
-  width: 90%;
+  width: 100%;
   max-width: 1200px;
-  min-height: 80vh;
-  margin: 30px auto;
-  background-color: #111111;
-  border-radius: 12px;
+  min-height: 90vh;
+  background-color: #2a2a3d;
+  border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 0 20px rgba(164, 69, 178, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
+/* Sidebar */
 .sidebar {
-  width: 250px;
-  background-color: #2E003E;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  border-right: 2px solid #A445B2;
+  width: 260px;
+  background: linear-gradient(to bottom right, #3b3b6d, #2a2a4d);
+  padding: 2rem 1.5rem;
+  transition: all 0.4s ease-in-out;
+  position: relative;
+}
+
+.sidebar:hover {
+  transform: scale(1.03);
 }
 
 .sidebar header {
+  margin-bottom: 2rem;
   text-align: center;
-  margin-bottom: 20px;
-  color: #FFFFFF;
-  font-weight: bold;
 }
 
-.sidebar header button {
-  background-color: #571B7E;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.sidebar header button:hover {
-  background-color: #A445B2;
-}
-
-.sidebar button {
-  background-color: #571B7E;
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-}
-
-.sidebar button:hover {
-  background-color: #A445B2;
-}
-
-.main-content {
-  flex-grow: 1;
-  padding: 30px;
-  background-color: #000000;
-}
-
-h1, h2 {
-  color: #A445B2;
-  margin-bottom: 20px;
-  font-weight: 600;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-input, button {
-  padding: 10px;
-  border-radius: 6px;
-  border: none;
-  font-size: 1rem;
-}
-
-input {
-  background-color: #111111;
-  color: white;
-  border: 1px solid #571B7E;
-}
-
-input:focus {
-  outline: none;
-  border-color: #A445B2;
-  box-shadow: 0 0 5px #A445B2;
+#user-info {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
 }
 
 button {
-  background-color: #571B7E;
+  width: 100%;
+  padding: 12px 15px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 8px;
+  background: #4e4ec2;
   color: white;
-  font-weight: bold;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  transform: translateX(0);
 }
 
 button:hover {
-  background-color: #A445B2;
+  background: #6a6af0;
+  transform: translateX(10px);
 }
 
-ul {
-  list-style: none;
-  margin-top: 20px;
+button:active {
+  transform: scale(0.98);
 }
 
-ul li {
-  background-color: #111111;
-  padding: 15px;
-  margin-bottom: 10px;
-  border: 1px solid #571B7E;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space
+hr {
+  margin: 1.5rem 0;
+  border: none;
+  border-top: 1px solid #666;
+}
+
+/* Animación de botones */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+button[data-route] {
+  animation: pulse 3s infinite alternate ease-in-out;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #1f1f30;
+  min-height: 100%;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Animación fadeIn */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Efecto hover en contenedor */
+.container:hover {
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
 }
