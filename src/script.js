@@ -71,6 +71,7 @@ function renderAddForm() {
     e.target.reset();
   });
 }
+//edit
 function renderEditForm() {
   app.innerHTML = `
     <h2>Edit Event</h2>
@@ -89,11 +90,6 @@ function renderEditForm() {
     if (e.target.name.value) updatedEvent.name = e.target.name.value;
     if (e.target.date.value) updatedEvent.date = e.target.date.value;
 
-    if (!id) {
-      alert('Please enter an ID');
-      return;
-    }
-
     await fetch(`${API_URL}/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -103,7 +99,7 @@ function renderEditForm() {
     e.target.reset();
   });
 }
-
+//remove
 function renderRemoveForm() {
   app.innerHTML = `
     <h2>Remove Event</h2>
@@ -146,7 +142,7 @@ function renderRemoveForm() {
     }
   });
 }
-
+//show
 async function renderEvents() {
   app.innerHTML = '<h2>Events List</h2>';
 
@@ -162,6 +158,7 @@ async function renderEvents() {
     }
 
     const list = document.createElement('ul');
+    //create and add styles to event list
     list.style.listStyle = 'none';
     list.style.padding = '0';
 
@@ -172,21 +169,19 @@ async function renderEvents() {
       li.style.display = 'flex';
       li.style.justifyContent = 'space-between';
       li.style.alignItems = 'center';
+        //final result and show list 
+      li.innerHTML = `<span><strong>ID:</strong> ${event.id} | <strong>Name:</strong> ${event.name || 'N/A'} | <strong>Date:</strong> ${event.date || 'N/A'}</span>`;
 
-      li.innerHTML = `
-        <span><strong>ID:</strong> ${event.id} | <strong>Name:</strong> ${event.name || 'N/A'} | <strong>Date:</strong> ${event.date || 'N/A'}</span>
-      `;
-
-      list.appendChild(li);
+      list.appendChild(li);//add li into the list 
     });
 
-    app.appendChild(list);
+    app.appendChild(list);//add list into the app 
   } catch (error) {
     console.error('Error loading events:', error);
     app.innerHTML += '<p>Could not load events. Please try again later.</p>';
   }
 }
-//register 
+//register user (user or admin)
 function renderRegisterForm() {
   app.innerHTML = `
     <h2>Register</h2>
@@ -234,7 +229,7 @@ function renderRegisterForm() {
     }
   });
 }
-//login
+//login (user or admin)
 function renderLoginForm() {
   app.innerHTML = `
     <h2>Login</h2>
