@@ -46,10 +46,10 @@ function applyRoleAccess(role) {
 if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('currentUser');
-        alert('Has cerrado sesión');
-        applyRoleAccess(null);
+        alert('User logout');
+        applyRoleAccess(null);//no active role
         location.hash = 'login';
-        app.innerHTML = '<h2>Por favor inicia sesión</h2>';
+        app.innerHTML = '<h2>Please login again</h2>';
     });
 }
 
@@ -60,14 +60,14 @@ function loadRoute(route) {
     const publicRoutes = ['login', 'register'];
 
     if (!currentUser && !publicRoutes.includes(route)) {
-        app.innerHTML = '<h2>Debes iniciar sesión para continuar</h2>';
+        app.innerHTML = '<h2>You should login in the page to show the options</h2>';
         location.hash = 'login';
         return;
     }
 
     if (adminRoutes.includes(route)) {
         if (!currentUser || currentUser.role !== 'admin') {
-            app.innerHTML = '<h2>Access Denied</h2><p>No tienes permisos para acceder a esta sección.</p>';
+            app.innerHTML = '<h2>Access Denied</h2><p>DENEGATE</p>';
             return;
         }
     }
@@ -92,7 +92,7 @@ function loadRoute(route) {
             renderLoginForm();
             break;
         default:
-            app.innerHTML = '<h2>Bienvenido al sistema de eventos</h2>';
+            app.innerHTML = '<h2>WELCOME TO EVENT SYSTEM</h2>';
             break;
     }
 }
