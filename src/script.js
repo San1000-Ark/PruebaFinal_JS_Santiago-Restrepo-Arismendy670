@@ -1,13 +1,14 @@
 const app = document.getElementById('app');
 const buttons = document.querySelectorAll('.sidebar button');
+const logoutBtn = document.getElementById('logoutBtn');
 const API_URL = 'http://localhost:3000/events';
 
-//  detect change of the hash in the URL (#add, #edit, #remove, #show)
+// Detect URL hash changes
 window.addEventListener('hashchange', () => {
     loadRoute(location.hash.slice(1));
 });
 
-// btn menu
+// Handle sidebar buttons
 buttons.forEach(button => {
     button.addEventListener('click', () => {
         const route = button.dataset.route;
@@ -15,12 +16,62 @@ buttons.forEach(button => {
     });
 });
 
-// change initial 
+// On page load
 window.addEventListener('DOMContentLoaded', () => {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    applyRoleAccess(currentUser?.role || null);
     loadRoute(location.hash.slice(1));
 });
-//options routes
+
+// Control visibility of sidebar buttons
+function applyRoleAccess(role) {
+    const routesForAdmin = ['add-event', 'edit-event', 'remove-event'];
+
+    buttons.forEach(button => {
+        const route = button.dataset.route;
+
+        if (routesForAdmin.includes(route)) {
+            button.style.display = role === 'admin' ? 'block' : 'none';
+        } else {
+            button.style.display = role ? 'block' : 'none'; // Solo si hay usuario logueado
+        }
+    });
+
+    if (logoutBtn) {
+        logoutBtn.style.display = role ? 'block' : 'none';
+    }
+}
+
+// Logout
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('currentUser');
+        alert('Has cerrado sesión');
+        applyRoleAccess(null);
+        location.hash = 'login';
+        app.innerHTML = '<h2>Por favor inicia sesión</h2>';
+    });
+}
+
+// Load views based on hash
 function loadRoute(route) {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    const adminRoutes = ['add-event', 'edit-event', 'remove-event'];
+    const publicRoutes = ['login', 'register'];
+
+    if (!currentUser && !publicRoutes.includes(route)) {
+        app.innerHTML = '<h2>Debes iniciar sesión para continuar</h2>';
+        location.hash = 'login';
+        return;
+    }
+
+    if (adminRoutes.includes(route)) {
+        if (!currentUser || currentUser.role !== 'admin') {
+            app.innerHTML = '<h2>Access Denied</h2><p>No tienes permisos para acceder a esta sección.</p>';
+            return;
+        }
+    }
+
     switch (route) {
         case 'add-event':
             renderAddForm();
@@ -41,20 +92,21 @@ function loadRoute(route) {
             renderLoginForm();
             break;
         default:
-            app.innerHTML = '<h2>Welcome to the events</h2>';
+            app.innerHTML = '<h2>Bienvenido al sistema de eventos</h2>';
             break;
     }
 }
-//add
+
+// Add event
 function renderAddForm() {
     app.innerHTML = `
     <h2>Add Event</h2>
     <form id="addForm">
-      <input type="text" name="name" placeholder="Name Event" required><br><br>
-      <input type="date" name="date" placeholder="Date of Event" required><br><br>
-      <button type="submit">Add Event</button>
+      <input type="text" name="name" placeholder="Event name" required><br><br>
+      <input type="date" name="date" required><br><br>
+      <button type="submit">Add</button>
     </form>
-  `;
+    `;
 
     document.getElementById('addForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -71,85 +123,73 @@ function renderAddForm() {
         e.target.reset();
     });
 }
-//edit
+
+// Edit event
 function renderEditForm() {
     app.innerHTML = `
     <h2>Edit Event</h2>
     <form id="editForm">
       <input type="text" name="id" placeholder="Event ID" required><br><br>
-      <input type="text" name="name" placeholder="New Name Event"><br><br>
-      <input type="date" name="date" placeholder="New Date Event"><br><br>
-      <button type="submit">Update Event</button>
+      <input type="text" name="name" placeholder="New name"><br><br>
+      <input type="date" name="date"><br><br>
+      <button type="submit">Update</button>
     </form>
-  `;
+    `;
 
     document.getElementById('editForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = e.target.id.value;
-        const updatedEvent = {};
-        if (e.target.name.value) updatedEvent.name = e.target.name.value;
-        if (e.target.date.value) updatedEvent.date = e.target.date.value;
+        const updated = {};
+        if (e.target.name.value) updated.name = e.target.name.value;
+        if (e.target.date.value) updated.date = e.target.date.value;
 
         await fetch(`${API_URL}/${id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedEvent)
+            body: JSON.stringify(updated)
         });
         alert('Event updated!');
         e.target.reset();
     });
 }
-//remove
+
+// Delete event
 function renderRemoveForm() {
     app.innerHTML = `
     <h2>Remove Event</h2>
     <form id="removeForm">
-      <input type="text" name="id" placeholder="Event ID (text or number)" required><br><br>
-      <button type="submit">Delete Event</button>
+      <input type="text" name="id" placeholder="Event ID" required><br><br>
+      <button type="submit">Delete</button>
     </form>
-  `;
+    `;
 
-    const form = document.getElementById('removeForm');
-    form.addEventListener('submit', async (e) => {
+    document.getElementById('removeForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-
-        const id = e.target.id.value.trim();
-
-        if (!id) {
-            alert('Please enter a valid Event ID');
-            return;
-        }
+        const id = e.target.id.value;
 
         try {
-            const response = await fetch(`${API_URL}/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+            const res = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE'
             });
 
-            if (response.status === 200 || response.status === 204) {
-                alert('Event deleted successfully');
-                form.reset();
-            } else if (response.status === 404) {
-                alert('Event not found');
+            if (res.status === 200 || res.status === 204) {
+                alert('Event deleted');
+                e.target.reset();
             } else {
-                alert('Error deleting event');
+                alert('Event not found');
             }
-        } catch (error) {
-            console.error('Error deleting event:', error);
-            alert('An error occurred while deleting the event.');
+        } catch (err) {
+            alert('Error deleting event');
         }
     });
 }
-//show
+
+// Show events
 async function renderEvents() {
     app.innerHTML = '<h2>Events List</h2>';
 
     try {
         const res = await fetch(API_URL);
-        if (!res.ok) throw new Error('Error fetching events');
-
         const events = await res.json();
 
         if (events.length === 0) {
@@ -158,30 +198,24 @@ async function renderEvents() {
         }
 
         const list = document.createElement('ul');
-        //create and add styles to event list
         list.style.listStyle = 'none';
         list.style.padding = '0';
 
-        events.forEach(event => {
+        events.forEach(ev => {
             const li = document.createElement('li');
-            li.style.padding = '10px';
             li.style.borderBottom = '1px solid #ccc';
-            li.style.display = 'flex';
-            li.style.justifyContent = 'space-between';
-            li.style.alignItems = 'center';
-            //final result and show list 
-            li.innerHTML = `<span><strong>ID:</strong> ${event.id} | <strong>Name:</strong> ${event.name || 'N/A'} | <strong>Date:</strong> ${event.date || 'N/A'}</span>`;
-
-            list.appendChild(li);//add li into the list 
+            li.style.padding = '10px';
+            li.innerHTML = `<strong>ID:</strong> ${ev.id} | <strong>Name:</strong> ${ev.name} | <strong>Date:</strong> ${ev.date}`;
+            list.appendChild(li);
         });
 
-        app.appendChild(list);//add list into the app 
-    } catch (error) {
-        console.error('Error loading events:', error);
-        app.innerHTML += '<p>Could not load events. Please try again later.</p>';
+        app.appendChild(list);
+    } catch (err) {
+        app.innerHTML += '<p>Error loading events.</p>';
     }
 }
-//register user (user or admin)
+
+// Register
 function renderRegisterForm() {
     app.innerHTML = `
     <h2>Register</h2>
@@ -196,10 +230,11 @@ function renderRegisterForm() {
       </select><br><br>
       <button type="submit">Register</button>
     </form>
-  `;
+    `;
 
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+
         const user = {
             username: e.target.username.value,
             email: e.target.email.value,
@@ -207,7 +242,7 @@ function renderRegisterForm() {
             role: e.target.role.value
         };
 
-        const res = await fetch('http://localhost:3000/users?email=' + user.email);
+        const res = await fetch(`http://localhost:3000/users?email=${user.email}`);
         const existing = await res.json();
 
         if (existing.length > 0) {
@@ -215,21 +250,22 @@ function renderRegisterForm() {
             return;
         }
 
-        const save = await fetch('http://localhost:3000/users', {
+        const save = await fetch(`http://localhost:3000/users`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user)
         });
 
         if (save.ok) {
-            alert('User registered... Redirecting to login...');
+            alert('User registered successfully! Redirecting to login...');
             location.hash = 'login';
         } else {
-            alert('Error registering user.');
+            alert('Registration failed.');
         }
     });
 }
-//login (user or admin)
+
+// Login
 function renderLoginForm() {
     app.innerHTML = `
     <h2>Login</h2>
@@ -238,7 +274,7 @@ function renderLoginForm() {
       <input type="password" name="password" placeholder="Password" required><br><br>
       <button type="submit">Login</button>
     </form>
-  `;
+    `;
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -252,7 +288,6 @@ function renderLoginForm() {
             const user = users[0];
             localStorage.setItem('currentUser', JSON.stringify(user));
             alert(`Welcome ${user.username}`);
-            showUserInfo();
             applyRoleAccess(user.role);
             location.hash = 'show-events';
         } else {
@@ -260,5 +295,4 @@ function renderLoginForm() {
         }
     });
 }
-
 

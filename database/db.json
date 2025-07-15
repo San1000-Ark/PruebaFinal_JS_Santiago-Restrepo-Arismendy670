@@ -41,5 +41,21 @@
       "id": "nyc4uE8"
     }
   ],
-  "events": []
+  "events": [
+    {
+      "id": "034d",
+      "name": "Examen ",
+      "date": "2025-07-17"
+    },
+    {
+      "id": "4760",
+      "name": "santiago restrepo",
+      "date": "2025-07-18"
+    },
+    {
+      "id": "ca35",
+      "name": "Examen ",
+      "date": "2025-07-31"
+    }
+  ]
 }
