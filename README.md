@@ -20,22 +20,24 @@ This project was developed as part of the practical assessment for Module 3 of t
 ✅ User view of available events  
 ✅ Event registration for users  
 ✅ Contact form connected to JSON Server  
-✅ SPA navigation using JavaScript routing  
 ✅ Session persistence using `localStorage`  
 ✅ Responsive and modern UI design with a fixed sidebar  
 
 ---
 
-## ❌ Features Not Implemented
+## ❌ Features Not Implemented / Issues
 
 ⚠️ **Maximum number of guests per event**  
-> The system does not currently restrict or track the maximum number of registered participants per event.
+> The system does not currently restrict or track the number of registered participants per event.
 
 ⚠️ **Active events not displayed**  
-> There was an issue with filtering or displaying only the currently active events.
+> The system does not correctly show only currently active events.
 
-⚠️ **No Postman Testing**  
-> Due to technical limitations or time constraints, API routes were not tested using Postman. Instead, fetch-based requests and browser-side validation were used.
+⚠️ **Postman testing not performed**  
+> Due to technical limitations or time constraints, API routes were not tested using Postman. Only fetch-based browser requests were used.
+
+⚠️ **SPA routing did not work correctly**  
+> The navigation between views/pages using JavaScript routes did not function properly. Page switching may not reflect the correct URL hash or view updates.
 
 ---
 
@@ -43,22 +45,13 @@ This project was developed as part of the practical assessment for Module 3 of t
 
 ```
 📦 spa-events-project
-├── 📁 css
+├── 📁 styles
 │   └── styles.css
 ├── 📁 js
-│   ├── main.js
-│   ├── router.js
-│   ├── login.js
-│   ├── register.js
-│   ├── admin.js
-│   └── user.js
-├── 📁 views
-│   ├── login.html
-│   ├── register.html
-│   ├── admin.html
-│   └── user.html
+│   ├── script.js
+├── 📁 public
+│   ├── index.html
 ├── db.json
-└── index.html
 ```
 
 ---
@@ -77,23 +70,24 @@ This project was developed as part of the practical assessment for Module 3 of t
 ## ▶️ How to Run the Project
 
 1. Clone the repository or download the project files.
-2. Install JSON Server globally (if you don't have it yet):
+2. Install JSON Server globally (if not installed):
    ```bash
    npm install -g json-server
    ```
-3. Start the server:
+3. Start the JSON Server:
    ```bash
    json-server --watch db.json --port 3000
    ```
 4. Open `index.html` in your browser.
-5. Interact with the application to register, log in, and manage/view events.
+5. Use the application to register, log in, and manage/view events.
 
 ---
 
 ## 🧪 Testing
 
-- All core functionalities were manually tested using the browser and `console.log` outputs.
-- Postman was **not used** to test API endpoints.
+- Functionality was tested manually using the browser and `console.log`.
+- Postman was not used.
+- SPA routes were intended to change views using JavaScript, but did not work as expected.
 
 ---
 
