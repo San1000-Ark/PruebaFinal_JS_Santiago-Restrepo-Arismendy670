@@ -33,7 +33,7 @@ function applyRoleAccess(role) {
         if (routesForAdmin.includes(route)) {
             button.style.display = role === 'admin' ? 'block' : 'none';
         } else {
-            button.style.display = role ? 'block' : 'none'; // Solo si hay usuario logueado
+            button.style.display = role ? 'block' : 'none'; // only if has a logged user
         }
     });
 
